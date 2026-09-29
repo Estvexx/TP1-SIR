@@ -1,0 +1,378 @@
+{
+  "info": {
+    "_postman_id": "2b5ab3c4-9024-4e49-9cdf-ca3d72d4f8b3",
+    "name": "json_server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41134446"
+  },
+  "item": [
+    {
+      "name": "POST - Aluno",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nome\": \"Camila\",\r\n    \"apelido\": \"Amorim\",\r\n    \"idade\": 21,\r\n    \"cursoId\": 3,\r\n    \"ano\": 4\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alunos/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST - Curso",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"id\": 4,\r\n  \"curso\": \"Ambiente\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/cursos/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "cursos",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Alunos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"nome\": \"Marcos Antonio aa Silva\",\r\n  \"email\": \"marcos.silvaa@email.com\",\r\n  \"password\": \"jOao123!.aa\",\r\n  \"empresaId\": \"98787358-f4eb-4da9-a149-9853068deb42\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alunos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Alunos paginado",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/alunos?_page=2&_limit=2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos"
+          ],
+          "query": [
+            {
+              "key": "_page",
+              "value": "2"
+            },
+            {
+              "key": "_limit",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Alunos sort asc",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/alunos?_sort=nome&_order=asc",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos"
+          ],
+          "query": [
+            {
+              "key": "_sort",
+              "value": "nome"
+            },
+            {
+              "key": "_order",
+              "value": "asc"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Aluno",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/alunos/:id",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            ":id"
+          ],
+          "variable": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Cursos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/cursos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "cursos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Curso",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/cursos/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "cursos",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Alunos e Curso",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/alunos/?_expand=curso",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            ""
+          ],
+          "query": [
+            {
+              "key": "_expand",
+              "value": "curso"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET - Aluno e Curso",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/alunos/5?_expand=curso",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            "5"
+          ],
+          "query": [
+            {
+              "key": "_expand",
+              "value": "curso"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT - Aluno",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nome\": \"Hugo\",\r\n    \"apelido\": \"Amorimm\",\r\n    \"idade\": 29,\r\n    \"idCurso\": 1,\r\n    \"ano\": 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alunos/XyF7fEKna-w",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            "XyF7fEKna-w"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT - Curso",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"curso\": \"Ambienteeeeeee\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/cursos/XYgjFQqqNac",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "cursos",
+            "XYgjFQqqNac"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE - Curso",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/cursos/kudUiNf2Cpc",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "cursos",
+            "kudUiNf2Cpc"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE - Aluno",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/alunos/rEC_gMnS2PE",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "alunos",
+            "rEC_gMnS2PE"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

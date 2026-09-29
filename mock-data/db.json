@@ -1,0 +1,59 @@
+{
+  "alunos": [
+    {
+      "id": 1,
+      "nome": "Francisco",
+      "apelido": "Esteves",
+      "idade": 21,
+      "cursoId": 1,
+      "ano": 3
+    },
+    {
+      "id": 2,
+      "nome": "Candido",
+      "apelido": "Costa",
+      "idade": 24,
+      "cursoId": 2,
+      "ano": 1
+    },
+    {
+      "id": 3,
+      "nome": "Miguel",
+      "apelido": "Pereira",
+      "idade": 24,
+      "cursoId": 1,
+      "ano": 3
+    },
+    {
+      "nome": "Duarte",
+      "apelido": "Amorim",
+      "idade": 43,
+      "cursoId": 3,
+      "ano": 4,
+      "id": 4
+    },
+    {
+      "nome": "Camila",
+      "apelido": "Amorim",
+      "idade": 21,
+      "cursoId": 3,
+      "ano": 4,
+      "id": 5
+    }
+  ],
+  "cursos": [
+    {
+      "id": 1,
+      "curso": "Engenharia Informatica"
+    },
+    {
+      "id": 2,
+      "curso": "Tecnologias e Multimedia"
+    },
+    {
+      "id": 3,
+      "curso": "Servico Social"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
