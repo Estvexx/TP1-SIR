@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cursos</title>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a class="logo" href="index.html">Escola<span>Hub</span></a>
+      <div>
+        <a href="aluno_overview.html">Alunos</a>
+        <a href="curso_overview.html" aria-current="page">Cursos</a>
+      </div>
+    </nav>
+
+    <main>
+      <header class="page-header">
+        <div>
+          <h1>Cursos</h1>
+          <p>Organiza a oferta de formação da tua escola.</p>
+        </div>
+        <button id="abrir-form" type="button" class="btn">
+          Adicionar curso
+        </button>
+      </header>
+
+      <section class="panel" aria-label="Lista de cursos">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="table"></tbody>
+          </table>
+          <p id="message"></p>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="modal">
+      <form id="form">
+        <h2>Adicionar curso</h2>
+
+        <label for="nome-curso">Curso</label>
+        <input id="nome-curso" name="curso" required />
+
+        <div class="form-actions">
+          <button id="fechar-form" type="button" class="btn-edit">
+            Cancelar
+          </button>
+          <button type="submit" class="btn">Guardar</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast-overlay" id="toast-overlay"></div>
+
+    <dialog id="loader" aria-label="A carregar...">
+      <div class="loader-spinner" aria-hidden="true"></div>
+    </dialog>
+
+    <script src="./js/script.js"></script>
+    <script src="./js/curso.js"></script>
+  </body>
+</html>

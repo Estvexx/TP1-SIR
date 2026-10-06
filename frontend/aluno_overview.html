@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alunos</title>
+    <link rel="stylesheet" href="./css/index.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a class="logo" href="index.html">Escola<span>Hub</span></a>
+      <div>
+        <a href="aluno_overview.html" aria-current="page">Alunos</a>
+        <a href="curso_overview.html">Cursos</a>
+      </div>
+    </nav>
+
+    <main>
+      <header class="page-header">
+        <div>
+          <h1>Alunos</h1>
+          <p>Gere os alunos da tua escola.</p>
+        </div>
+        <button id="abrir-form" type="button" class="btn">
+          Adicionar aluno
+        </button>
+      </header>
+
+      <section class="panel" aria-label="Lista de alunos">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>ID do curso</th>
+                <th>Ano</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+
+            <tbody id="table"></tbody>
+          </table>
+
+          <p id="message" role="status"></p>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="modal">
+      <form id="form">
+        <h2>Adicionar aluno</h2>
+
+        <label for="nome-aluno">Nome</label>
+        <input id="nome-aluno" name="nome" required />
+
+        <label for="apelido-aluno">Apelido</label>
+        <input id="apelido-aluno" name="apelido" required />
+
+        <label for="idade-aluno">Idade</label>
+        <input id="idade-aluno" name="idade" type="number" min="0" required />
+
+        <label for="curso-aluno">ID do curso</label>
+        <input id="curso-aluno" name="cursoId" type="number" min="1" required />
+
+        <label for="ano-aluno">Ano</label>
+        <input id="ano-aluno" name="ano" type="number" min="1" required />
+
+        <div class="form-actions">
+          <button id="fechar-form" type="button" class="btn-edit">
+            Cancelar
+          </button>
+          <button type="submit" class="btn">Guardar</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast-overlay" id="toast-overlay"></div>
+
+    <dialog id="loader" aria-label="A carregar...">
+      <div class="loader-spinner" aria-hidden="true"></div>
+    </dialog>
+
+    <script src="./js/script.js"></script>
+    <script src="./js/aluno.js"></script>
+  </body>
+</html>
