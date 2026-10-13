@@ -44,7 +44,7 @@ async function getAlunos() {
   }
 }
 
-async function getAluno(id) {
+async function getUserById(id) {
   showLoading();
   try {
     if (!id) throw new Error("ID do aluno inválido");
@@ -69,7 +69,7 @@ async function guardarAluno() {
     nome: form.elements.nome.value,
     apelido: form.elements.apelido.value,
     idade: Number(form.elements.idade.value),
-    cursoId: Number(form.elements.cursoId.value),
+    curso: form.elements.cursoId.value,
     ano: Number(form.elements.ano.value),
   };
 
@@ -129,13 +129,14 @@ async function apagarAluno(id) {
   }
 }
 async function editar(id) {
-  const aluno = await getAluno(id);
+  const aluno = await getUserById(id);
   if (!aluno) return;
-  alunoId = aluno.id;
+  alunoId = aluno._id;
+  console.log(alunoId);
   form.elements.nome.value = aluno.nome;
   form.elements.apelido.value = aluno.apelido;
   form.elements.idade.value = aluno.idade;
-  form.elements.cursoId.value = aluno.cursoId;
+  form.elements.cursoId.value = aluno.curso.nome;
   form.elements.ano.value = aluno.ano;
 
   form.querySelector("h2").textContent = "Editar aluno";
@@ -144,6 +145,7 @@ async function editar(id) {
 
 async function listAlunos() {
   const alunos = await getAlunos();
+  console.log(alunos);
 
   if (!alunos) return false;
 
@@ -154,10 +156,10 @@ async function listAlunos() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${aluno.id}</td>
+      <td>${aluno._id}</td>
       <td>${aluno.nome} ${aluno.apelido}</td>
       <td>${aluno.idade}</td>
-      <td>${aluno.cursoId}</td>
+      <td>${aluno.curso.nome}</td>
       <td>${aluno.ano}</td>
       <td>
         <button class="btn-edit">Editar</button>
@@ -165,8 +167,8 @@ async function listAlunos() {
       </td>
     `;
 
-    tr.querySelector(".btn-edit").onclick = () => editar(aluno.id);
-    tr.querySelector(".btn-delete").onclick = () => apagarAluno(aluno.id);
+    tr.querySelector(".btn-edit").onclick = () => editar(aluno._id);
+    tr.querySelector(".btn-delete").onclick = () => apagarAluno(aluno._id);
 
     table.appendChild(tr);
   }

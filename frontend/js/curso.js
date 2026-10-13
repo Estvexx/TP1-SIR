@@ -27,18 +27,21 @@ document.querySelector("#fechar-form").onclick = function () {
 
 async function guardarCurso() {
   showLoading();
-  const curso = {
-    curso: form.elements.curso.value,
+  const nome = {
+    nome: form.elements.curso.value,
   };
 
   const url = cursoId ? `${api_url}/${cursoId}` : api_url;
   const method = cursoId ? "PUT" : "POST";
 
+  console.log(url);
+  console.log(method);
+
   try {
     const response = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(curso),
+      body: JSON.stringify(nome),
     });
 
     if (!response.ok) throw new Error("Erro ao guardar curso");
@@ -107,6 +110,7 @@ async function getCurso(id) {
 
 async function apagarCurso(id) {
   showLoading();
+  console.log(id);
   try {
     const response = await fetch(`${api_url}/${id}`, { method: "DELETE" });
     if (!response.ok) throw new Error("Erro ao eliminar curso");
@@ -128,8 +132,8 @@ async function apagarCurso(id) {
 async function editar(id) {
   const curso = await getCurso(id);
   if (!curso) return;
-  cursoId = curso.id;
-  form.elements.curso.value = curso.curso;
+  cursoId = curso._id;
+  form.elements.curso.value = curso.nome;
 
   form.querySelector("h2").textContent = "Editar curso";
   modal.showModal();
@@ -147,16 +151,16 @@ async function listCursos() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td>${curso.id}</td>
-      <td>${curso.curso}</td>
+      <td>${curso._id}</td>
+      <td>${curso.nome}</td>
       <td>
         <button class="btn-edit">Editar</button>
         <button class="btn-delete">Apagar</button>
       </td>
     `;
 
-    tr.querySelector(".btn-edit").onclick = () => editar(curso.id);
-    tr.querySelector(".btn-delete").onclick = () => apagarCurso(curso.id);
+    tr.querySelector(".btn-edit").onclick = () => editar(curso._id);
+    tr.querySelector(".btn-delete").onclick = () => apagarCurso(curso._id);
 
     table.appendChild(tr);
   }
