@@ -1,4 +1,5 @@
 import { Course } from "../models/course.js";
+import { Aluno } from "../models/aluno.js";
 import mongoose from "mongoose";
 
 export async function createCourse(req, res) {
@@ -49,6 +50,13 @@ export async function updateCourse(req, res) {
 
 export async function deleteCourse(req, res) {
   const { id } = req.params;
+  const aluno = await Aluno.exists({ Course: _id });
+
+  if (aluno) {
+    res.status(409).json({
+      mensagem: "Existe um aluno associado a este curso",
+    });
+  }
 
   const course = await Course.findByIdAndDelete(id);
 
