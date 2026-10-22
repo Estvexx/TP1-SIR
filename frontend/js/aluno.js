@@ -1,15 +1,26 @@
 const api_url = "http://localhost:3000/alunos";
+const api_url_cursos = "http://localhost:3000/cursos";
 const table = document.querySelector("#table");
 const message = document.querySelector("#message");
 const modal = document.querySelector("#modal");
 const form = document.querySelector("#form");
 const loader = document.querySelector("#loader");
+const searchInput = document.querySelector("#pesquisa-alunos");
+const clearSearch = document.querySelector("#limpar-pesquisa");
+const resultCount = document.querySelector("#resultado-pesquisa");
 let alunoId = null;
 let pendingLoads = 0;
+let alunosAtuais = [];
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   guardarAluno();
+});
+searchInput.addEventListener("input", () => renderAlunos(searchInput.value));
+clearSearch.addEventListener("click", () => {
+  searchInput.value = "";
+  renderAlunos();
+  searchInput.focus();
 });
 
 document.querySelector("#abrir-form").onclick = function () {
@@ -29,8 +40,7 @@ async function getAlunos() {
   showLoading();
   try {
     const response = await fetch(api_url);
-    console.log(response);
-    if (!response.ok) throw new Error("Erro ao carregar alunos");
+    if (!response.ok) throw new Error();
     return await response.json();
   } catch (erro) {
     showToast(
@@ -38,26 +48,28 @@ async function getAlunos() {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
 }
 
 async function getUserById(id) {
+  if (!id) {
+    showToast("ID do aluno inválido.", "danger", 5000);
+    return;
+  }
   showLoading();
+
   try {
-    if (!id) throw new Error("ID do aluno inválido");
     const response = await fetch(`${api_url}/${id}`);
-    if (!response.ok) throw new Error("Erro ao carregar alunos");
+    if (!response.ok) throw new Error("Erro ao carregar aluno");
     return await response.json();
   } catch (erro) {
     showToast(
-      "Não foi possível carregar os dados do aluno. Tenta novamente.",
+      "Não foi possível carregar o aluno. Tenta novamente.",
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
@@ -123,20 +135,19 @@ async function apagarAluno(id) {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
 }
+
 async function editar(id) {
   const aluno = await getUserById(id);
   if (!aluno) return;
   alunoId = aluno._id;
-  console.log(alunoId);
   form.elements.nome.value = aluno.nome;
   form.elements.apelido.value = aluno.apelido;
   form.elements.idade.value = aluno.idade;
-  form.elements.cursoId.value = aluno.curso.nome;
+  form.elements.cursoId.value = aluno.curso._id;
   form.elements.ano.value = aluno.ano;
 
   form.querySelector("h2").textContent = "Editar aluno";
@@ -149,10 +160,28 @@ async function listAlunos() {
 
   if (!alunos) return false;
 
-  message.textContent = "";
-  table.innerHTML = "";
+  alunosAtuais = alunos;
+  renderAlunos();
+  atualizarResumo(alunos);
+  return true;
+}
 
-  for (const aluno of alunos) {
+function renderAlunos(searchTerm = searchInput.value) {
+  const termo = searchTerm.trim().toLocaleLowerCase();
+  const alunosFiltrados = alunosAtuais.filter((aluno) =>
+    `${aluno._id} ${aluno.nome} ${aluno.apelido} ${aluno.idade} ${aluno.curso.nome} ${aluno.ano}`
+      .toLocaleLowerCase()
+      .includes(termo),
+  );
+
+  message.textContent =
+    alunosAtuais.length && !alunosFiltrados.length
+      ? "Não foram encontrados alunos para esta pesquisa."
+      : "";
+  table.innerHTML = "";
+  resultCount.textContent = `${alunosFiltrados.length} de ${alunosAtuais.length} aluno(s)`;
+
+  for (const aluno of alunosFiltrados) {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
@@ -162,8 +191,10 @@ async function listAlunos() {
       <td>${aluno.curso.nome}</td>
       <td>${aluno.ano}</td>
       <td>
-        <button class="btn-edit">Editar</button>
-        <button class="btn-delete">Apagar</button>
+        <div class="actions">
+          <button class="btn-edit">Editar</button>
+          <button class="btn-delete">Apagar</button>
+        </div>
       </td>
     `;
 
@@ -172,10 +203,42 @@ async function listAlunos() {
 
     table.appendChild(tr);
   }
-  return true;
+}
+
+function atualizarResumo(alunos) {
+  document.querySelector("#total-alunos").textContent = alunos.length;
+  document.querySelector("#total-cursos").textContent = new Set(
+    alunos.map((aluno) => aluno.curso?._id),
+  ).size;
+  const idadeMedia = alunos.length
+    ? alunos.reduce((total, aluno) => total + aluno.idade, 0) / alunos.length
+    : 0;
+  document.querySelector("#idade-media").textContent = alunos.length
+    ? `${idadeMedia.toFixed(1)} anos`
+    : "--";
 }
 
 listAlunos();
+
+// Colocar os cursos no dropdown
+async function carregarCursos() {
+  const select = document.querySelector("#curso-aluno");
+  try {
+    const res = await fetch(api_url_cursos);
+    const cursos = await res.json();
+
+    cursos.forEach((curso) => {
+      const option = document.createElement("option");
+      option.value = curso._id;
+      option.textContent = curso.nome;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar cursos:", err);
+  }
+}
+
+carregarCursos();
 
 function showLoading() {
   if (pendingLoads === 0) loader.showModal();

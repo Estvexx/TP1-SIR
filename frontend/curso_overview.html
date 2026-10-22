@@ -26,7 +26,33 @@
         </button>
       </header>
 
+      <section class="stats-grid" aria-label="Resumo dos cursos">
+        <article class="stat-card">
+          <span class="stat-label">Cursos disponíveis</span>
+          <strong id="total-cursos">--</strong>
+          <p>Oferta de formação</p>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Alunos inscritos</span>
+          <strong id="total-alunos">--</strong>
+          <p>Alunos com curso atribuído</p>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Média por curso</span>
+          <strong id="media-alunos">--</strong>
+          <p>Alunos por curso</p>
+        </article>
+      </section>
+
       <section class="panel" aria-label="Lista de cursos">
+        <div class="table-toolbar">
+          <div class="search">
+            <label class="sr-only" for="pesquisa-cursos">Pesquisar cursos</label>
+            <input id="pesquisa-cursos" type="search" placeholder="Pesquisar por nome ou ID..." />
+            <button id="limpar-pesquisa" class="btn-edit" type="button">Limpar</button>
+          </div>
+          <span id="resultado-pesquisa" class="result-count" role="status"></span>
+        </div>
         <div class="table-scroll">
           <table>
             <thead>

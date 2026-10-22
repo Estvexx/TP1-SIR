@@ -4,13 +4,23 @@ const message = document.querySelector("#message");
 const modal = document.querySelector("#modal");
 const form = document.querySelector("#form");
 const loader = document.querySelector("#loader");
+const searchInput = document.querySelector("#pesquisa-cursos");
+const clearSearch = document.querySelector("#limpar-pesquisa");
+const resultCount = document.querySelector("#resultado-pesquisa");
 
 let cursoId = null;
 let pendingLoads = 0;
+let cursosAtuais = [];
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   guardarCurso();
+});
+searchInput.addEventListener("input", () => renderCursos(searchInput.value));
+clearSearch.addEventListener("click", () => {
+  searchInput.value = "";
+  renderCursos();
+  searchInput.focus();
 });
 
 document.querySelector("#abrir-form").onclick = function () {
@@ -27,15 +37,10 @@ document.querySelector("#fechar-form").onclick = function () {
 
 async function guardarCurso() {
   showLoading();
-  const nome = {
-    nome: form.elements.curso.value,
-  };
+  const nome = { nome: form.elements.curso.value };
 
   const url = cursoId ? `${api_url}/${cursoId}` : api_url;
   const method = cursoId ? "PUT" : "POST";
-
-  console.log(url);
-  console.log(method);
 
   try {
     const response = await fetch(url, {
@@ -65,7 +70,6 @@ async function guardarCurso() {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
@@ -83,7 +87,6 @@ async function getCursos() {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
@@ -102,7 +105,6 @@ async function getCurso(id) {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
@@ -110,7 +112,6 @@ async function getCurso(id) {
 
 async function apagarCurso(id) {
   showLoading();
-  console.log(id);
   try {
     const response = await fetch(`${api_url}/${id}`, { method: "DELETE" });
     if (!response.ok) throw new Error("Erro ao eliminar curso");
@@ -123,7 +124,6 @@ async function apagarCurso(id) {
       "danger",
       5000,
     );
-    console.error(erro);
   } finally {
     hideLoading();
   }
@@ -144,18 +144,36 @@ async function listCursos() {
 
   if (!cursos) return false;
 
-  message.textContent = "";
-  table.innerHTML = "";
+  cursosAtuais = cursos;
+  renderCursos();
+  atualizarResumo(cursos);
+  carregarResumoAlunos();
+  return true;
+}
 
-  for (const curso of cursos) {
+function renderCursos(searchTerm = searchInput.value) {
+  const termo = searchTerm.trim().toLocaleLowerCase();
+  const cursosFiltrados = cursosAtuais.filter((curso) =>
+    `${curso._id} ${curso.nome}`.toLocaleLowerCase().includes(termo),
+  );
+
+  message.textContent = cursosAtuais.length && !cursosFiltrados.length
+    ? "Não foram encontrados cursos para esta pesquisa."
+    : "";
+  table.innerHTML = "";
+  resultCount.textContent = `${cursosFiltrados.length} de ${cursosAtuais.length} curso(s)`;
+
+  for (const curso of cursosFiltrados) {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${curso._id}</td>
       <td>${curso.nome}</td>
       <td>
-        <button class="btn-edit">Editar</button>
-        <button class="btn-delete">Apagar</button>
+        <div class="actions">
+          <button class="btn-edit">Editar</button>
+          <button class="btn-delete">Apagar</button>
+        </div>
       </td>
     `;
 
@@ -164,7 +182,26 @@ async function listCursos() {
 
     table.appendChild(tr);
   }
-  return true;
+}
+
+function atualizarResumo(cursos) {
+  document.querySelector("#total-cursos").textContent = cursos.length;
+}
+
+async function carregarResumoAlunos() {
+  try {
+    const response = await fetch("http://localhost:3000/alunos");
+    if (!response.ok) throw new Error("Erro ao carregar alunos");
+    const alunos = await response.json();
+    document.querySelector("#total-alunos").textContent = alunos.length;
+    document.querySelector("#media-alunos").textContent = cursosAtuais.length
+      ? (alunos.length / cursosAtuais.length).toFixed(1)
+      : "--";
+  } catch (erro) {
+    document.querySelector("#total-alunos").textContent = "--";
+    document.querySelector("#media-alunos").textContent = "--";
+    console.error(erro);
+  }
 }
 
 listCursos();

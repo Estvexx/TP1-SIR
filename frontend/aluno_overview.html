@@ -26,7 +26,33 @@
         </button>
       </header>
 
+      <section class="stats-grid" aria-label="Resumo dos alunos">
+        <article class="stat-card">
+          <span class="stat-label">Total de alunos</span>
+          <strong id="total-alunos">--</strong>
+          <p>Registos na escola</p>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Cursos ativos</span>
+          <strong id="total-cursos">--</strong>
+          <p>Cursos com alunos inscritos</p>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Idade média</span>
+          <strong id="idade-media">--</strong>
+          <p>Entre os alunos registados</p>
+        </article>
+      </section>
+
       <section class="panel" aria-label="Lista de alunos">
+        <div class="table-toolbar">
+          <div class="search">
+            <label class="sr-only" for="pesquisa-alunos">Pesquisar alunos</label>
+            <input id="pesquisa-alunos" type="search" placeholder="Pesquisar por nome, curso ou ano..." />
+            <button id="limpar-pesquisa" class="btn-edit" type="button">Limpar</button>
+          </div>
+          <span id="resultado-pesquisa" class="result-count" role="status"></span>
+        </div>
         <div class="table-scroll">
           <table>
             <thead>
@@ -62,7 +88,9 @@
         <input id="idade-aluno" name="idade" type="number" min="0" required />
 
         <label for="curso-aluno">Curso</label>
-        <input id="curso-aluno" name="cursoId" required />
+        <select id="curso-aluno" name="cursoId" required>
+          <option value="">Selecione um curso...</option>
+        </select>
 
         <label for="ano-aluno">Ano</label>
         <input id="ano-aluno" name="ano" type="number" min="1" required />
