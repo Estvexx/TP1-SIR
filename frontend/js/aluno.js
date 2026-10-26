@@ -1,5 +1,5 @@
-const api_url = "http://localhost:3000/alunos";
-const api_url_cursos = "http://localhost:3000/cursos";
+const api_url = "https://tp1-sir-klbw.onrender.com/alunos";
+const api_url_cursos = "https://tp1-sir-klbw.onrender.com/cursos";
 const table = document.querySelector("#table");
 const message = document.querySelector("#message");
 const modal = document.querySelector("#modal");
