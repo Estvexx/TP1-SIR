@@ -50,10 +50,10 @@ export async function updateCourse(req, res) {
 
 export async function deleteCourse(req, res) {
   const { id } = req.params;
-  const aluno = await Aluno.exists({ Course: _id });
+  const aluno = await Aluno.exists({ curso: id });
 
   if (aluno) {
-    res.status(409).json({
+    return res.status(409).json({
       mensagem: "Existe um aluno associado a este curso",
     });
   }
@@ -61,7 +61,7 @@ export async function deleteCourse(req, res) {
   const course = await Course.findByIdAndDelete(id);
 
   if (!course) {
-    res.status(400).json({
+    return res.status(404).json({
       mensagem: "Erro ao eliminar curso",
     });
   }

@@ -12,6 +12,15 @@ let alunoId = null;
 let pendingLoads = 0;
 let alunosAtuais = [];
 
+async function mensagemErroBackend(response, fallback) {
+  try {
+    const dados = await response.json();
+    return dados.mensagem || dados.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   guardarAluno();
@@ -40,14 +49,10 @@ async function getAlunos() {
   showLoading();
   try {
     const response = await fetch(api_url);
-    if (!response.ok) throw new Error();
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar alunos."));
     return await response.json();
   } catch (erro) {
-    showToast(
-      "Não foi possível carregar a lista de alunos. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -62,14 +67,10 @@ async function getUserById(id) {
 
   try {
     const response = await fetch(`${api_url}/${id}`);
-    if (!response.ok) throw new Error("Erro ao carregar aluno");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar aluno."));
     return await response.json();
   } catch (erro) {
-    showToast(
-      "Não foi possível carregar o aluno. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -95,7 +96,7 @@ async function guardarAluno() {
       body: JSON.stringify(aluno),
     });
 
-    if (!response.ok) throw new Error("Erro ao guardar aluno");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao guardar aluno."));
 
     alunoId = null;
     form.reset();
@@ -110,11 +111,7 @@ async function guardarAluno() {
       );
     }
   } catch (erro) {
-    showToast(
-      "Não foi possível guardar o aluno. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
     console.error(erro);
   } finally {
     hideLoading();
@@ -125,16 +122,12 @@ async function apagarAluno(id) {
   showLoading();
   try {
     const response = await fetch(`${api_url}/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("Erro ao eliminar aluno");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao eliminar aluno."));
     if (await listAlunos()) {
       showToast("Aluno eliminado com sucesso.", "success", 5000);
     }
   } catch (erro) {
-    showToast(
-      "Não foi possível eliminar o aluno. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -162,7 +155,7 @@ async function listAlunos() {
 
   alunosAtuais = alunos;
   renderAlunos();
-  atualizarResumo(alunos);
+  await atualizarResumo();
   return true;
 }
 
@@ -205,17 +198,22 @@ function renderAlunos(searchTerm = searchInput.value) {
   }
 }
 
-function atualizarResumo(alunos) {
-  document.querySelector("#total-alunos").textContent = alunos.length;
-  document.querySelector("#total-cursos").textContent = new Set(
-    alunos.map((aluno) => aluno.curso?._id),
-  ).size;
-  const idadeMedia = alunos.length
-    ? alunos.reduce((total, aluno) => total + aluno.idade, 0) / alunos.length
-    : 0;
-  document.querySelector("#idade-media").textContent = alunos.length
-    ? `${idadeMedia.toFixed(1)} anos`
-    : "--";
+async function atualizarResumo() {
+  try {
+    const response = await fetch(`${api_url}/summary`);
+    if (!response.ok) throw new Error("Erro ao carregar o resumo dos alunos.");
+
+    const resumo = await response.json();
+    document.querySelector("#total-alunos").textContent = resumo.totalAlunos;
+    document.querySelector("#total-cursos").textContent = resumo.cursosAtivos;
+    document.querySelector("#idade-media").textContent =
+      resumo.idadeMedia === null ? "--" : `${resumo.idadeMedia.toFixed(1)} anos`;
+  } catch (erro) {
+    document.querySelector("#total-alunos").textContent = "--";
+    document.querySelector("#total-cursos").textContent = "--";
+    document.querySelector("#idade-media").textContent = "--";
+    console.error(erro);
+  }
 }
 
 listAlunos();
@@ -225,6 +223,7 @@ async function carregarCursos() {
   const select = document.querySelector("#curso-aluno");
   try {
     const res = await fetch(api_url_cursos);
+    if (!res.ok) throw new Error(await mensagemErroBackend(res, "Erro ao carregar cursos."));
     const cursos = await res.json();
 
     cursos.forEach((curso) => {

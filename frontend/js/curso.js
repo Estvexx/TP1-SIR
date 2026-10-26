@@ -12,6 +12,15 @@ let cursoId = null;
 let pendingLoads = 0;
 let cursosAtuais = [];
 
+async function mensagemErroBackend(response, fallback) {
+  try {
+    const dados = await response.json();
+    return dados.mensagem || dados.message || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   guardarCurso();
@@ -49,7 +58,7 @@ async function guardarCurso() {
       body: JSON.stringify(nome),
     });
 
-    if (!response.ok) throw new Error("Erro ao guardar curso");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao guardar curso."));
 
     cursoId = null;
     form.reset();
@@ -65,11 +74,7 @@ async function guardarCurso() {
       );
     }
   } catch (erro) {
-    showToast(
-      "Não foi possível guardar o curso. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -79,14 +84,10 @@ async function getCursos() {
   showLoading();
   try {
     const response = await fetch(api_url);
-    if (!response.ok) throw new Error("Erro ao carregar cursos");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar cursos."));
     return await response.json();
   } catch (erro) {
-    showToast(
-      "Não foi possível carregar a lista de cursos. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -97,14 +98,10 @@ async function getCurso(id) {
   try {
     if (!id) throw new Error("ID do curso inválido");
     const response = await fetch(`${api_url}/${id}`);
-    if (!response.ok) throw new Error("Erro ao carregar cursos");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar cursos."));
     return await response.json();
   } catch (erro) {
-    showToast(
-      "Não foi possível carregar os dados do curso. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -114,16 +111,12 @@ async function apagarCurso(id) {
   showLoading();
   try {
     const response = await fetch(`${api_url}/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error("Erro ao eliminar curso");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao eliminar curso."));
     if (await listCursos()) {
       showToast("Curso eliminado com sucesso.", "success", 5000);
     }
   } catch (erro) {
-    showToast(
-      "Não foi possível eliminar o curso. Tenta novamente.",
-      "danger",
-      5000,
-    );
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
   } finally {
     hideLoading();
   }
@@ -191,7 +184,7 @@ function atualizarResumo(cursos) {
 async function carregarResumoAlunos() {
   try {
     const response = await fetch("http://localhost:3000/alunos");
-    if (!response.ok) throw new Error("Erro ao carregar alunos");
+    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar alunos."));
     const alunos = await response.json();
     document.querySelector("#total-alunos").textContent = alunos.length;
     document.querySelector("#media-alunos").textContent = cursosAtuais.length

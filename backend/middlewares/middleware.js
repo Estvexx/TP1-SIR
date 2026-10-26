@@ -33,7 +33,7 @@ export function validateUUID(req, res, next) {
 }
 
 export function validateAluno(req, res, next) {
-  const { nome, apelido, idade, cursoId, ano } = req.body ?? {};
+  const { nome, apelido, idade, curso, ano } = req.body ?? {};
 
   if (
     typeof nome !== "string" ||
@@ -41,7 +41,7 @@ export function validateAluno(req, res, next) {
     typeof apelido !== "string" ||
     apelido.trim() === "" ||
     !Number.isInteger(idade) ||
-    cursoId == "" ||
+    curso == "" ||
     !Number.isInteger(ano)
   ) {
     return res.status(400).json({

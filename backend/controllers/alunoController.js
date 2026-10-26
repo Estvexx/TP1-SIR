@@ -69,3 +69,30 @@ export async function deleteUser(req, res) {
     mensagem: "Aluno eliminado com sucesso",
   });
 }
+
+export async function countUsers(req, res) {
+  const countUsers = await Aluno.countDocuments();
+
+  return res.status(200).json({ count: countUsers });
+}
+
+export async function getSummary(req, res) {
+  const [totalAlunos, cursosAtivos, idadeMedia] = await Promise.all([
+    Aluno.countDocuments(),
+    Aluno.distinct("curso").then((cursos) => cursos.length),
+    Aluno.aggregate([
+      {
+        $group: {
+          _id: null,
+          media: { $avg: "$idade" },
+        },
+      },
+    ]),
+  ]);
+
+  return res.status(200).json({
+    totalAlunos,
+    cursosAtivos,
+    idadeMedia: idadeMedia[0]?.media ?? null,
+  });
+}

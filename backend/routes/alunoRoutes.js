@@ -2,6 +2,8 @@ import { Router } from "express";
 import {
   createAluno,
   getAllUsers,
+  countUsers,
+  getSummary,
   getUserById,
   updateUser,
   deleteUser,
@@ -12,6 +14,8 @@ const alunoRouter = Router();
 
 alunoRouter.post("/", validateAluno, createAluno);
 alunoRouter.get("/", getAllUsers);
+alunoRouter.get("/count", countUsers);
+alunoRouter.get("/summary", getSummary);
 alunoRouter.get("/:id", validateUUID, getUserById);
 alunoRouter.put("/:id", validateUUID, validateAluno, updateUser);
 alunoRouter.delete("/:id", validateUUID, deleteUser);
