@@ -2,7 +2,6 @@ import { Router } from "express";
 import {
   createAluno,
   getAllUsers,
-  countUsers,
   getSummary,
   getUserById,
   updateUser,
@@ -12,12 +11,11 @@ import { validateUUID, validateAluno } from "../middlewares/middleware.js";
 
 const alunoRouter = Router();
 
-alunoRouter.post("/", validateAluno, createAluno);
-alunoRouter.get("/", getAllUsers);
-alunoRouter.get("/count", countUsers);
+alunoRouter.post("/", validateAluno, createAluno).get("/", getAllUsers);
 alunoRouter.get("/summary", getSummary);
-alunoRouter.get("/:id", validateUUID, getUserById);
-alunoRouter.put("/:id", validateUUID, validateAluno, updateUser);
-alunoRouter.delete("/:id", validateUUID, deleteUser);
+alunoRouter
+  .get("/:id", validateUUID, getUserById)
+  .put("/:id", validateUUID, validateAluno, updateUser)
+  .delete("/:id", validateUUID, deleteUser);
 
 export default alunoRouter;

@@ -1,10 +1,7 @@
 import { Aluno } from "../models/aluno.js";
-import mongoose from "mongoose";
-import { getCourseById } from "./courseController.js";
 
 export async function createAluno(req, res) {
   const { nome, apelido, idade, curso, ano } = req.body;
-  //getCourseById(curso);
   const aluno = await Aluno.create({ nome, apelido, idade, curso, ano });
   await aluno.populate("curso");
 
@@ -70,14 +67,11 @@ export async function deleteUser(req, res) {
   });
 }
 
-export async function countUsers(req, res) {
-  const countUsers = await Aluno.countDocuments();
-
-  return res.status(200).json({ count: countUsers });
-}
-
+// countDocuments retorna quantidade
+// Distinct retorna-me um array de um atributo e remove dups
+// Proprieda group retorna um array
 export async function getSummary(req, res) {
-  const [totalAlunos, cursosAtivos, idadeMedia] = await Promise.all([
+  const [qntAlunos, cursosAtivos, idadeMediaResultado] = await Promise.all([
     Aluno.countDocuments(),
     Aluno.distinct("curso").then((cursos) => cursos.length),
     Aluno.aggregate([
@@ -90,9 +84,12 @@ export async function getSummary(req, res) {
     ]),
   ]);
 
+  const idadeMedia =
+    (idadeMediaResultado[0] && idadeMediaResultado[0].media) || null;
+
   return res.status(200).json({
-    totalAlunos,
+    qntAlunos,
     cursosAtivos,
-    idadeMedia: idadeMedia[0]?.media ?? null,
+    idadeMedia,
   });
 }

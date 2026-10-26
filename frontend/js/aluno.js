@@ -25,6 +25,7 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   guardarAluno();
 });
+
 searchInput.addEventListener("input", () => renderAlunos(searchInput.value));
 clearSearch.addEventListener("click", () => {
   searchInput.value = "";
@@ -45,19 +46,6 @@ document.querySelector("#fechar-form").onclick = function () {
   modal.close();
 };
 
-async function getAlunos() {
-  showLoading();
-  try {
-    const response = await fetch(api_url);
-    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar alunos."));
-    return await response.json();
-  } catch (erro) {
-    showToast(erro.message || "Erro na operação.", "danger", 5000);
-  } finally {
-    hideLoading();
-  }
-}
-
 async function getUserById(id) {
   if (!id) {
     showToast("ID do aluno inválido.", "danger", 5000);
@@ -67,7 +55,10 @@ async function getUserById(id) {
 
   try {
     const response = await fetch(`${api_url}/${id}`);
-    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao carregar aluno."));
+    if (!response.ok)
+      throw new Error(
+        await mensagemErroBackend(response, "Erro ao carregar aluno."),
+      );
     return await response.json();
   } catch (erro) {
     showToast(erro.message || "Erro na operação.", "danger", 5000);
@@ -96,7 +87,10 @@ async function guardarAluno() {
       body: JSON.stringify(aluno),
     });
 
-    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao guardar aluno."));
+    if (!response.ok)
+      throw new Error(
+        await mensagemErroBackend(response, "Erro ao guardar aluno."),
+      );
 
     alunoId = null;
     form.reset();
@@ -122,7 +116,10 @@ async function apagarAluno(id) {
   showLoading();
   try {
     const response = await fetch(`${api_url}/${id}`, { method: "DELETE" });
-    if (!response.ok) throw new Error(await mensagemErroBackend(response, "Erro ao eliminar aluno."));
+    if (!response.ok)
+      throw new Error(
+        await mensagemErroBackend(response, "Erro ao eliminar aluno."),
+      );
     if (await listAlunos()) {
       showToast("Aluno eliminado com sucesso.", "success", 5000);
     }
@@ -148,17 +145,50 @@ async function editar(id) {
 }
 
 async function listAlunos() {
-  const alunos = await getAlunos();
-  console.log(alunos);
+  showLoading();
+  try {
+    const response = await fetch(api_url);
+    if (!response.ok)
+      throw new Error(
+        await mensagemErroBackend(response, "Erro ao carregar alunos."),
+      );
 
-  if (!alunos) return false;
-
-  alunosAtuais = alunos;
-  renderAlunos();
-  await atualizarResumo();
-  return true;
+    alunosAtuais = await response.json();
+    renderAlunos();
+    return true;
+  } catch (erro) {
+    showToast(erro.message || "Erro na operação.", "danger", 5000);
+    return false;
+  } finally {
+    hideLoading();
+  }
 }
 
+listAlunos();
+
+// Colocar os cursos no dropdown
+async function carregarCursos() {
+  const select = document.querySelector("#curso-aluno");
+  try {
+    const res = await fetch(api_url_cursos);
+    if (!res.ok)
+      throw new Error(
+        await mensagemErroBackend(res, "Erro ao carregar cursos."),
+      );
+    const cursos = await res.json();
+
+    cursos.forEach((curso) => {
+      const option = document.createElement("option");
+      option.value = curso._id;
+      option.textContent = curso.nome;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error("Erro ao carregar cursos:", err);
+  }
+}
+
+// tabela enquanto pesquiso ou nao
 function renderAlunos(searchTerm = searchInput.value) {
   const termo = searchTerm.trim().toLocaleLowerCase();
   const alunosFiltrados = alunosAtuais.filter((aluno) =>
@@ -195,45 +225,6 @@ function renderAlunos(searchTerm = searchInput.value) {
     tr.querySelector(".btn-delete").onclick = () => apagarAluno(aluno._id);
 
     table.appendChild(tr);
-  }
-}
-
-async function atualizarResumo() {
-  try {
-    const response = await fetch(`${api_url}/summary`);
-    if (!response.ok) throw new Error("Erro ao carregar o resumo dos alunos.");
-
-    const resumo = await response.json();
-    document.querySelector("#total-alunos").textContent = resumo.totalAlunos;
-    document.querySelector("#total-cursos").textContent = resumo.cursosAtivos;
-    document.querySelector("#idade-media").textContent =
-      resumo.idadeMedia === null ? "--" : `${resumo.idadeMedia.toFixed(1)} anos`;
-  } catch (erro) {
-    document.querySelector("#total-alunos").textContent = "--";
-    document.querySelector("#total-cursos").textContent = "--";
-    document.querySelector("#idade-media").textContent = "--";
-    console.error(erro);
-  }
-}
-
-listAlunos();
-
-// Colocar os cursos no dropdown
-async function carregarCursos() {
-  const select = document.querySelector("#curso-aluno");
-  try {
-    const res = await fetch(api_url_cursos);
-    if (!res.ok) throw new Error(await mensagemErroBackend(res, "Erro ao carregar cursos."));
-    const cursos = await res.json();
-
-    cursos.forEach((curso) => {
-      const option = document.createElement("option");
-      option.value = curso._id;
-      option.textContent = curso.nome;
-      select.appendChild(option);
-    });
-  } catch (err) {
-    console.error("Erro ao carregar cursos:", err);
   }
 }
 

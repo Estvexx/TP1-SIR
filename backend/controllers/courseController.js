@@ -16,6 +16,21 @@ export async function getAllCourses(req, res) {
   return res.status(201).json(courses);
 }
 
+export async function getSummary(req, res) {
+  const [cursosDisponiveis, alunosInscritos] = await Promise.all([
+    Course.countDocuments(),
+    Aluno.countDocuments(),
+  ]);
+
+  return res.status(200).json({
+    cursosDisponiveis,
+    alunosInscritos,
+    mediaPorCurso: cursosDisponiveis
+      ? alunosInscritos / cursosDisponiveis
+      : 0,
+  });
+}
+
 export async function getCourseById(req, res) {
   const { id } = req.params;
   const course = await Course.findById(id);
