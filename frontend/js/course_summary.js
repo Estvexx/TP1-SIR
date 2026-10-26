@@ -1,4 +1,4 @@
-const url = "http://localhost:3000/cursos";
+const url = "https://tp1-sir-klbw.onrender.com/cursos";
 
 const qntCursos = document.querySelector("#total-cursos");
 const qntAlunosInscritos = document.querySelector("#total-alunos");
