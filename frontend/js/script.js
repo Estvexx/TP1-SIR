@@ -51,6 +51,14 @@ const showToast = (
   }
 
   document.body.appendChild(box);
+  // Os popovers ficam na camada superior, acima dos dialogs modais.
+  if (typeof box.showPopover === "function") {
+    box.setAttribute("popover", "manual");
+    box.showPopover();
+  } else {
+    const dialogs = document.querySelectorAll("dialog[open]");
+    if (dialogs.length) dialogs[dialogs.length - 1].appendChild(box);
+  }
 
   window.setTimeout(() => {
     if (box.isConnected) box.remove();

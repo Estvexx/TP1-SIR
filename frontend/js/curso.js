@@ -23,8 +23,25 @@ async function mensagemErroBackend(response, fallback) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!validarCurso()) return;
   guardarCurso();
 });
+
+function validarCurso() {
+  const curso = form.elements.curso;
+  curso.value = curso.value.trim();
+  curso.setCustomValidity(
+    curso.value.length < 1 || curso.value.length > 23
+      ? "O nome do curso deve ter entre 1 e 23 caracteres." : "",
+  );
+  if (/[<>]|style\s*=/i.test(curso.value)) {
+    curso.setCustomValidity("Não é permitido inserir HTML ou atributos style.");
+  }
+  return form.reportValidity();
+}
+
+form.addEventListener("input", (event) => event.target.setCustomValidity(""));
+form.addEventListener("reset", () => form.elements.curso.setCustomValidity(""));
 searchInput.addEventListener("input", () => renderCursos(searchInput.value));
 clearSearch.addEventListener("click", () => {
   searchInput.value = "";

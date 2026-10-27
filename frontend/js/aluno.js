@@ -23,7 +23,46 @@ async function mensagemErroBackend(response, fallback) {
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
+  if (!validarAluno()) return;
   guardarAluno();
+});
+
+function validarAluno() {
+  const { nome, apelido, idade, cursoId, ano } = form.elements;
+
+  nome.value = nome.value.trim();
+  apelido.value = apelido.value.trim();
+
+  nome.setCustomValidity(
+    nome.value.length < 1 || nome.value.length > 23
+      ? "O nome deve ter entre 1 e 23 caracteres." : "",
+  );
+  apelido.setCustomValidity(
+    apelido.value.length < 1 || apelido.value.length > 23
+      ? "O apelido deve ter entre 1 e 23 caracteres." : "",
+  );
+  idade.setCustomValidity(
+    !Number.isSafeInteger(idade.valueAsNumber) ||
+    idade.valueAsNumber < 1 || idade.valueAsNumber > 130
+      ? "A idade deve ser um inteiro entre 1 e 130." : "",
+  );
+  cursoId.setCustomValidity(cursoId.value === "" ? "Seleciona um curso." : "");
+  ano.setCustomValidity(
+    !Number.isSafeInteger(ano.valueAsNumber) || ano.valueAsNumber < 1
+      ? "O ano deve ser um inteiro igual ou superior a 1." : "",
+  );
+
+  for (const campo of [nome, apelido]) {
+    if (/[<>]|style\s*=/i.test(campo.value)) {
+      campo.setCustomValidity("Não é permitido inserir HTML ou atributos style.");
+    }
+  }
+  return form.reportValidity();
+}
+
+form.addEventListener("input", (event) => event.target.setCustomValidity(""));
+form.addEventListener("reset", () => {
+  for (const campo of form.elements) campo.setCustomValidity("");
 });
 
 searchInput.addEventListener("input", () => renderAlunos(searchInput.value));

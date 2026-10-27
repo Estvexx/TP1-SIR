@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 
 export function errorHandler(err, req, res, next) {
+  if (err.code === 11000) {
+    return res.status(409).json({
+      mensagem: req.baseUrl === "/cursos"
+        ? "Já existe um curso com esse nome."
+        : "Já existe um registo com esse valor.",
+    });
+  }
   if (err.name === "ValidationError") {
     const mensagens = Object.values(err.errors).map((erro) => erro.message);
 
@@ -40,6 +47,10 @@ export function validateAluno(req, res, next) {
   }
 
   const { nome, apelido, idade, curso, ano } = req.body ?? {};
+
+  if ([nome, apelido].some((valor) => typeof valor === "string" && /[<>]|style\s*=/i.test(valor))) {
+    return res.status(400).json({ mensagem: "Nome e apelido não podem conter HTML ou atributos style." });
+  }
 
   if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
     return res.status(400).json({
@@ -84,6 +95,10 @@ export function validateCurso(req, res, next) {
   }
 
   const { nome } = req.body ?? {};
+
+  if (typeof nome === "string" && /[<>]|style\s*=/i.test(nome)) {
+    return res.status(400).json({ mensagem: "O nome do curso não pode conter HTML ou atributos style." });
+  }
 
   if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
     return res.status(400).json({

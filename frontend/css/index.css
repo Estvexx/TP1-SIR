@@ -337,6 +337,10 @@ tbody tr:hover {
 
 /* Toast css */
 .toast {
+  margin: 0;
+  bottom: auto;
+  left: auto;
+  border: 0;
   position: fixed;
   top: 25px;
   right: 25px;

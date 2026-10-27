@@ -87,17 +87,17 @@
     </main>
 
     <dialog id="modal">
-      <form id="form">
+      <form id="form" novalidate>
         <h2>Adicionar aluno</h2>
 
         <label for="nome-aluno">Nome</label>
-        <input id="nome-aluno" name="nome" required />
+        <input id="nome-aluno" name="nome" minlength="1" maxlength="23" required />
 
         <label for="apelido-aluno">Apelido</label>
-        <input id="apelido-aluno" name="apelido" required />
+        <input id="apelido-aluno" name="apelido" minlength="1" maxlength="23" required />
 
         <label for="idade-aluno">Idade</label>
-        <input id="idade-aluno" name="idade" type="number" min="0" required />
+        <input id="idade-aluno" name="idade" type="number" min="1" max="130" step="1" required />
 
         <label for="curso-aluno">Curso</label>
         <select id="curso-aluno" name="cursoId" required>
@@ -105,7 +105,7 @@
         </select>
 
         <label for="ano-aluno">Ano</label>
-        <input id="ano-aluno" name="ano" type="number" min="1" required />
+        <input id="ano-aluno" name="ano" type="number" min="1" step="1" required />
 
         <div class="form-actions">
           <button id="fechar-form" type="button" class="btn-edit">
