@@ -54,7 +54,7 @@ function validarAluno() {
 
   for (const campo of [nome, apelido]) {
     if (/[<>]|style\s*=/i.test(campo.value)) {
-      campo.setCustomValidity("Não é permitido inserir HTML ou atributos style.");
+      campo.setCustomValidity("Taste a esticar");
     }
   }
   return form.reportValidity();

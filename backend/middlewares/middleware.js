@@ -49,7 +49,7 @@ export function validateAluno(req, res, next) {
   const { nome, apelido, idade, curso, ano } = req.body ?? {};
 
   if ([nome, apelido].some((valor) => typeof valor === "string" && /[<>]|style\s*=/i.test(valor))) {
-    return res.status(400).json({ mensagem: "Nome e apelido não podem conter HTML ou atributos style." });
+    return res.status(400).json({ mensagem: "Taste a esticar" });
   }
 
   if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
@@ -97,12 +97,12 @@ export function validateCurso(req, res, next) {
   const { nome } = req.body ?? {};
 
   if (typeof nome === "string" && /[<>]|style\s*=/i.test(nome)) {
-    return res.status(400).json({ mensagem: "O nome do curso não pode conter HTML ou atributos style." });
+    return res.status(400).json({ mensagem: "Taste a esticar" });
   }
 
-  if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
+  if (typeof nome !== "string" || nome.length < 1 || nome.length > 150) {
     return res.status(400).json({
-      mensagem: "O nome do curso deve ter entre 1 e 23 caracteres.",
+      mensagem: "O nome do curso deve ter entre 1 e 150 caracteres.",
     });
   }
 

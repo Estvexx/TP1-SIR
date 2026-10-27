@@ -349,7 +349,7 @@ tbody tr:hover {
   padding: 0.5rem;
   border-radius: 4px;
   box-shadow: -1px 1px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1023;
+  z-index: 2147483647;
   animation: slideInRight 0.3s ease-in-out forwards;
   transform: translateX(110%);
 }

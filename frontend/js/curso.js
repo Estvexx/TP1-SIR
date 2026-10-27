@@ -31,11 +31,11 @@ function validarCurso() {
   const curso = form.elements.curso;
   curso.value = curso.value.trim();
   curso.setCustomValidity(
-    curso.value.length < 1 || curso.value.length > 23
-      ? "O nome do curso deve ter entre 1 e 23 caracteres." : "",
+    curso.value.length < 1 || curso.value.length > 150
+      ? "O nome do curso deve ter entre 1 e 150 caracteres." : "",
   );
   if (/[<>]|style\s*=/i.test(curso.value)) {
-    curso.setCustomValidity("Não é permitido inserir HTML ou atributos style.");
+    curso.setCustomValidity("Taste a esticar");
   }
   return form.reportValidity();
 }
