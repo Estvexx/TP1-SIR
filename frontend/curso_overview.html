@@ -86,7 +86,13 @@
         <h2>Adicionar curso</h2>
 
         <label for="nome-curso">Curso</label>
-        <input id="nome-curso" name="curso" required />
+        <input
+          id="nome-curso"
+          name="curso"
+          minlength="1"
+          maxlength="23"
+          required
+        />
 
         <div class="form-actions">
           <button id="fechar-form" type="button" class="btn-edit">

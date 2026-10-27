@@ -1,5 +1,10 @@
 // script.js
 
+const API_BASE_URL =
+  ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname)
+    ? "http://localhost:3000"
+    : "https://tp1-sir-klbw.onrender.com";
+
 const toastIcon = (content) =>
   `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${content}</svg>`;
 

@@ -50,7 +50,7 @@ export async function updateCourse(req, res) {
 
   const course = await Course.findByIdAndUpdate(id, {
     nome,
-  });
+  }, { runValidators: true });
 
   if (!course) {
     res.status(400).json({

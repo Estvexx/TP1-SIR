@@ -1,5 +1,5 @@
-const api_url = "https://tp1-sir-klbw.onrender.com/alunos";
-const api_url_cursos = "https://tp1-sir-klbw.onrender.com/cursos";
+const api_url = `${API_BASE_URL}/alunos`;
+const api_url_cursos = `${API_BASE_URL}/cursos`;
 const table = document.querySelector("#table");
 const message = document.querySelector("#message");
 const modal = document.querySelector("#modal");
@@ -207,22 +207,39 @@ function renderAlunos(searchTerm = searchInput.value) {
   for (const aluno of alunosFiltrados) {
     const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${aluno._id}</td>
-      <td>${aluno.nome} ${aluno.apelido}</td>
-      <td>${aluno.idade}</td>
-      <td>${aluno.curso.nome}</td>
-      <td>${aluno.ano}</td>
-      <td>
-        <div class="actions">
-          <button class="btn-edit">Editar</button>
-          <button class="btn-delete">Apagar</button>
-        </div>
-      </td>
-    `;
+    const idCell = document.createElement("td");
+    idCell.textContent = aluno._id;
 
-    tr.querySelector(".btn-edit").onclick = () => editar(aluno._id);
-    tr.querySelector(".btn-delete").onclick = () => apagarAluno(aluno._id);
+    const nameCell = document.createElement("td");
+    nameCell.textContent = `${aluno.nome} ${aluno.apelido}`;
+
+    const ageCell = document.createElement("td");
+    ageCell.textContent = aluno.idade;
+
+    const courseCell = document.createElement("td");
+    courseCell.textContent = aluno.curso.nome;
+
+    const yearCell = document.createElement("td");
+    yearCell.textContent = aluno.ano;
+
+    const actionsCell = document.createElement("td");
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const editButton = document.createElement("button");
+    editButton.className = "btn-edit";
+    editButton.textContent = "Editar";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn-delete";
+    deleteButton.textContent = "Apagar";
+
+    actions.append(editButton, deleteButton);
+    actionsCell.appendChild(actions);
+    tr.append(idCell, nameCell, ageCell, courseCell, yearCell, actionsCell);
+
+    editButton.onclick = () => editar(aluno._id);
+    deleteButton.onclick = () => apagarAluno(aluno._id);
 
     table.appendChild(tr);
   }

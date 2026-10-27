@@ -54,9 +54,13 @@ export function validateAluno(req, res, next) {
 
 export function validateCurso(req, res, next) {
   const { nome } = req.body;
-  if (typeof nome !== "string" || nome.trim() === "") {
+  const nomeCurso = typeof nome === "string" ? nome.trim() : "";
+
+  if (!nomeCurso || nomeCurso.length > 23) {
     return res.status(400).json({
-      mensagem: "Preenche corretamente o campo nome",
+      mensagem: !nomeCurso
+        ? "Preenche corretamente o campo nome"
+        : "O nome do curso não pode ser superior a 23 caracteres",
     });
   }
   next();

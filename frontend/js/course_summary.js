@@ -1,4 +1,4 @@
-const url = "https://tp1-sir-klbw.onrender.com/cursos";
+const url = `${API_BASE_URL}/cursos`;
 
 const qntCursos = document.querySelector("#total-cursos");
 const qntAlunosInscritos = document.querySelector("#total-alunos");

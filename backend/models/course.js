@@ -10,6 +10,8 @@ const courseSchema = new mongoose.Schema(
     nome: {
       type: String,
       required: [true, "Campo nome do curso é obrigatório"],
+      minlength: [1, "O nome do curso não pode ser inferior a 1 caractere"],
+      maxlength: [23, "O nome do curso não pode ser superior a 23 caracteres"],
       trim: true,
     },
   },

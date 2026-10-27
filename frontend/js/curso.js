@@ -1,4 +1,4 @@
-const api_url = "https://tp1-sir-klbw.onrender.com/cursos";
+const api_url = `${API_BASE_URL}/cursos`;
 const table = document.querySelector("#table");
 const message = document.querySelector("#message");
 const modal = document.querySelector("#modal");
@@ -170,19 +170,30 @@ function renderCursos(searchTerm = searchInput.value) {
   for (const curso of cursosFiltrados) {
     const tr = document.createElement("tr");
 
-    tr.innerHTML = `
-      <td>${curso._id}</td>
-      <td>${curso.nome}</td>
-      <td>
-        <div class="actions">
-          <button class="btn-edit">Editar</button>
-          <button class="btn-delete">Apagar</button>
-        </div>
-      </td>
-    `;
+    const idCell = document.createElement("td");
+    idCell.textContent = curso._id;
 
-    tr.querySelector(".btn-edit").onclick = () => editar(curso._id);
-    tr.querySelector(".btn-delete").onclick = () => apagarCurso(curso._id);
+    const nameCell = document.createElement("td");
+    nameCell.textContent = curso.nome;
+
+    const actionsCell = document.createElement("td");
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    const editButton = document.createElement("button");
+    editButton.className = "btn-edit";
+    editButton.textContent = "Editar";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "btn-delete";
+    deleteButton.textContent = "Apagar";
+
+    actions.append(editButton, deleteButton);
+    actionsCell.appendChild(actions);
+    tr.append(idCell, nameCell, actionsCell);
+
+    editButton.onclick = () => editar(curso._id);
+    deleteButton.onclick = () => apagarCurso(curso._id);
 
     table.appendChild(tr);
   }

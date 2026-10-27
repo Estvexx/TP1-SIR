@@ -10,11 +10,15 @@ const alunoSchema = new mongoose.Schema(
     nome: {
       type: String,
       required: [true, "Campo nome é obrigatório"],
+      minlength: [1, "O nome não pode ser inferior a 1 caracteres"],
+      maxlength: [23, "O nome não pode ser superior a 23 caracteres"],
       trim: true,
     },
     apelido: {
       type: String,
       required: [true, "Campo apelido é obrigatório"],
+      minlength: [1, "O apelido não pode ser inferior a 1 caracteres"],
+      maxlength: [23, "O apelido não pode ser superior a 23 caracteres"],
       trim: true,
     },
     idade: {
@@ -29,7 +33,11 @@ const alunoSchema = new mongoose.Schema(
       required: [true, "Campo curso é obrigatório"],
     },
 
-    ano: { type: Number, required: [true, "Campo ano é obrigatório"] },
+    ano: {
+      type: Number,
+      required: [true, "Campo ano é obrigatório"],
+      min: [1, "O ano não pode ser inferior a 1"],
+    },
   },
   { timestamps: true },
 );
