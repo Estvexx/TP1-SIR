@@ -12,7 +12,9 @@ app.use(cors({ origin: /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/ }));
 app.use(express.json());
 app.use(express.static("../frontend"));
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+if (process.env.NODE_ENV === "development") {
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
 app.use("/alunos", alunoRouter);
 app.use("/cursos", courseRouter);
