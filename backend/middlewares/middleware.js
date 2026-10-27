@@ -33,35 +33,63 @@ export function validateUUID(req, res, next) {
 }
 
 export function validateAluno(req, res, next) {
+  for (const campo of ["nome", "apelido", "curso"]) {
+    if (typeof req.body?.[campo] === "string") {
+      req.body[campo] = req.body[campo].trim();
+    }
+  }
+
   const { nome, apelido, idade, curso, ano } = req.body ?? {};
 
-  if (
-    typeof nome !== "string" ||
-    nome.trim() === "" ||
-    typeof apelido !== "string" ||
-    apelido.trim() === "" ||
-    !Number.isInteger(idade) ||
-    curso == "" ||
-    !Number.isInteger(ano)
-  ) {
+  if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
     return res.status(400).json({
-      mensagem: "Preenche corretamente os campos.",
+      mensagem: "O nome deve ter entre 1 e 23 caracteres.",
     });
   }
 
-  next();
+  if (
+    typeof apelido !== "string" ||
+    apelido.length < 1 ||
+    apelido.length > 23
+  ) {
+    return res.status(400).json({
+      mensagem: "O apelido deve ter entre 1 e 23 caracteres.",
+    });
+  }
+
+  if (!Number.isSafeInteger(idade) || idade < 1 || idade > 130) {
+    return res.status(400).json({
+      mensagem: "A idade deve ser um número inteiro entre 1 e 130.",
+    });
+  }
+
+  if (typeof curso !== "string" || !mongoose.mongo.BSON.UUID.isValid(curso)) {
+    return res.status(400).json({
+      mensagem: "O curso deve ter um UUID válido.",
+    });
+  }
+
+  if (!Number.isSafeInteger(ano) || ano < 1) {
+    return res.status(400).json({
+      mensagem: "O ano deve ser um número inteiro igual ou superior a 1.",
+    });
+  }
+
+  return next();
 }
 
 export function validateCurso(req, res, next) {
-  const { nome } = req.body;
-  const nomeCurso = typeof nome === "string" ? nome.trim() : "";
+  if (typeof req.body?.nome === "string") {
+    req.body.nome = req.body.nome.trim();
+  }
 
-  if (!nomeCurso || nomeCurso.length > 23) {
+  const { nome } = req.body ?? {};
+
+  if (typeof nome !== "string" || nome.length < 1 || nome.length > 23) {
     return res.status(400).json({
-      mensagem: !nomeCurso
-        ? "Preenche corretamente o campo nome"
-        : "O nome do curso não pode ser superior a 23 caracteres",
+      mensagem: "O nome do curso deve ter entre 1 e 23 caracteres.",
     });
   }
-  next();
+
+  return next();
 }

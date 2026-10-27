@@ -1,6 +1,5 @@
 import { Course } from "../models/course.js";
 import { Aluno } from "../models/aluno.js";
-import mongoose from "mongoose";
 
 export async function createCourse(req, res) {
   const { nome } = req.body;
@@ -25,9 +24,7 @@ export async function getSummary(req, res) {
   return res.status(200).json({
     cursosDisponiveis,
     alunosInscritos,
-    mediaPorCurso: cursosDisponiveis
-      ? alunosInscritos / cursosDisponiveis
-      : 0,
+    mediaPorCurso: cursosDisponiveis ? alunosInscritos / cursosDisponiveis : 0,
   });
 }
 
@@ -50,7 +47,7 @@ export async function updateCourse(req, res) {
 
   const course = await Course.findByIdAndUpdate(id, {
     nome,
-  }, { runValidators: true });
+  });
 
   if (!course) {
     res.status(400).json({
