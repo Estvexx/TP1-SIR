@@ -1,6 +1,6 @@
 export const API_URL = import.meta.env.DEV
 	? "http://localhost:3000"
-	: "https://tp1-sir-klbw.onrender.com";
+	: (import.meta.env.VITE_API_URL ?? "https://tp1-sir-klbw.onrender.com");
 
 export async function apiError(response: Response) {
 	const body = await response.json().catch(() => ({}));

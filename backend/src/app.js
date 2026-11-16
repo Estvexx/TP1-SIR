@@ -8,9 +8,13 @@ import swaggerDocument from "../swagger-output.json" with { type: "json" };
 
 const app = express();
 
-app.use(cors({ origin: /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/ }));
+app.use(cors({
+  origin: [
+    /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/,
+    ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.replace(/\/$/, "")] : []),
+  ],
+}));
 app.use(express.json());
-app.use(express.static("../frontend"));
 
 if (process.env.NODE_ENV === "development") {
   app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -18,6 +22,14 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/alunos", alunoRouter);
 app.use("/cursos", courseRouter);
+
+if (process.env.FRONTEND_URL) {
+  const frontend = process.env.FRONTEND_URL.replace(/\/$/, "");
+  app.get("/", (_req, res) => res.redirect(302, frontend));
+  app.get("/index.html", (_req, res) => res.redirect(302, frontend));
+  app.get("/aluno_overview.html", (_req, res) => res.redirect(302, `${frontend}/alunos`));
+  app.get("/curso_overview.html", (_req, res) => res.redirect(302, `${frontend}/cursos`));
+}
 
 app.use(errorHandler);
 

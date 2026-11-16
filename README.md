@@ -1,21 +1,21 @@
 # TP1 — SIR: Gestão de alunos e cursos
 
-Aplicação de gestão escolar com uma API REST em Node.js/Express, persistência em MongoDB através de Mongoose e frontend em HTML, CSS e JavaScript. Permite criar, consultar, editar e eliminar alunos e cursos, pesquisar nas listas e consultar resumos estatísticos.
+Aplicação de gestão escolar com API REST em Node.js/Express, persistência em MongoDB através de Mongoose e frontend em SvelteKit.
 
 ## Links
 
 - [Repositório](https://github.com/Estvexx/TP1-SIR)
-- [Aplicação no Render](https://tp1-sir-klbw.onrender.com)
+- [API no Render](https://tp1-sir-klbw.onrender.com)
 - [API de alunos em produção](https://tp1-sir-klbw.onrender.com/alunos)
 - [API de cursos em produção](https://tp1-sir-klbw.onrender.com/cursos)
-- [Aplicação local](http://localhost:3000)
+- [Aplicação local](http://localhost:5173)
 - [Swagger local](http://localhost:3000/docs) — apenas com `NODE_ENV=development`.
 
 ## Estrutura
 
 ```text
 backend/       API, modelos, rotas, controladores e configuração do MongoDB
-frontend/      Páginas, estilos e JavaScript do cliente
+frontend/      Aplicação SvelteKit
 mock-data/     Dados de exemplo para JSON Server
 mock-server/   Coleção Postman do mock
 tests/         Coleção Postman da API
@@ -55,18 +55,37 @@ Requisitos: Node.js 22.12 ou superior, npm e uma base de dados MongoDB local ou 
    npm run dev
    ```
 
-5. Abrir [http://localhost:3000](http://localhost:3000). O Express serve também o frontend, sem necessidade de outro servidor.
+5. Noutra consola, iniciar o frontend:
 
-O comando `npm run dev` reinicia o servidor quando os ficheiros mudam. `npm start` executa sem esse modo de observação; ambos carregam o ficheiro `.env`. O servidor só começa a aceitar pedidos depois de estabelecer a ligação ao MongoDB.
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+6. Abrir [http://localhost:5173](http://localhost:5173). O backend corre em `http://localhost:3000`.
+
+O backend só começa a aceitar pedidos depois de estabelecer a ligação ao MongoDB. `npm start` usa o `.env` se existir; no Render lê as variáveis de ambiente do serviço.
+
+## Deploy no Render
+
+São necessários **dois serviços**, porque `/alunos` e `/cursos` são endpoints JSON do backend e também rotas de página no frontend:
+
+1. **Backend (Web Service existente):** manter `Root Directory` como `backend`, `Build Command` como `npm ci` e `Start Command` como `npm start`. Manter `MONGODB_URI` configurado nas variáveis de ambiente.
+2. **Frontend (novo Static Site):** escolher este repositório, definir `Root Directory` como `frontend`, `Build Command` como `npm ci && npm run build` e `Publish Directory` como `build`. A build produz `index.html`, `alunos/index.html` e `cursos/index.html`.
+3. No backend, adicionar a variável de ambiente `FRONTEND_URL` com o URL completo do Static Site (por exemplo, `https://nome-do-site.onrender.com`, sem barra final) e fazer redeploy. Esta variável autoriza CORS e redireciona `/`, `/aluno_overview.html` e `/curso_overview.html` para o frontend novo.
+4. Se o endereço do backend for diferente de `https://tp1-sir-klbw.onrender.com`, configurar `VITE_API_URL` no **frontend** com o URL do backend e fazer redeploy do Static Site.
+
+Abrir o URL do **Static Site** para usar a aplicação. O URL antigo continua a servir a API; os links HTML antigos só redirecionam depois de configurar `FRONTEND_URL`.
 
 ### Seleção da API
 
-O endereço é definido em [frontend/js/script.js](frontend/js/script.js):
+O endereço é definido em [frontend/src/lib/api.ts](frontend/src/lib/api.ts):
 
 | Onde o frontend é aberto | API utilizada |
 | --- | --- |
 | `localhost`, `127.0.0.1` ou `[::1]` | `http://localhost:3000` |
-| Outros domínios | `https://tp1-sir-klbw.onrender.com` |
+| Deploy | `VITE_API_URL` ou `https://tp1-sir-klbw.onrender.com` |
 
 Também é possível abrir o frontend com Live Server em localhost; o backend permite pedidos desses endereços por CORS. Abrir as páginas através de HTTP. Se a porta local da API mudar, atualizar também a configuração do frontend.
 
